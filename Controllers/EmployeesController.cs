@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Backend_Developer_test.DTOs;
+using Backend_Developer_test.Services;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,39 +16,48 @@ namespace Backend_Developer_test.Controllers
         {
             _employeeService = employeeService;
         }
-        // GET: api/<EmployeesController>
+
         [HttpGet]
-        public Task<IActionResult> Get()
+        public async Task<IActionResult> GetAll()
         {
-            return new string[] { "value1", "value2" };
+            var employees = await _employeeService.GetAllEmployeesAsync();
+            return Ok(employees);
         }
 
-        // GET api/<EmployeesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            return Ok(employee);
         }
 
-        // POST api/<EmployeesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] EmployeeDTO employeeDto)
         {
-
+            await _employeeService.AddEmployeeAsync(employeeDto);
+            return CreatedAtAction(nameof(Get), new { id = employeeDto.EmpNo }, employeeDto);
         }
 
-        // PUT api/<EmployeesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] EmployeeDTO employeeDto)
         {
-
+            if (id != employeeDto.EmpNo)
+            {
+                return BadRequest();
+            }
+            await _employeeService.UpdateEmployeeAsync(employeeDto);
+            return NoContent();
         }
 
-        // DELETE api/<EmployeesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-
+            await _employeeService.DeleteEmployeeAsync(id);
+            return NoContent();
         }
     }
 }

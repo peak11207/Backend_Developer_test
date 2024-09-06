@@ -10,13 +10,13 @@ namespace Backend_Developer_test.DATA
         {
 
         }
-        public DbSet<Employee> Employee { get; set; }
+        public DbSet<Employee> Employees { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // การกำหนดความสัมพันธ์ระหว่าง Order และ OrderItem
-            modelBuilder.Entity<Employee>().ToTable("EmployeeTable");
+            modelBuilder.Entity<Employee>().ToTable("Employees");
             //modelBuilder.Entity<Postmarker>().HasKey(m => m.Id);
             modelBuilder.Entity<Employee>().HasKey(m => m.EmpNo);
             modelBuilder.Entity<Employee>().Property(m => m.FirstName).IsRequired();
